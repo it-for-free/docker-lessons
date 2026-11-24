@@ -1,0 +1,33 @@
+services:
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: lesson13
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: lesson13
+    volumes:
+      - lesson13data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      PGHOST: db
+      PGUSER: lesson13
+      PGPASSWORD: secret
+      PGDATABASE: lesson13
+    depends_on:
+      - db
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+volumes:
+  lesson13data:

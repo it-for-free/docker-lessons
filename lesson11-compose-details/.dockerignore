@@ -1,0 +1,7 @@
+node_modules
+.git
+data
+*.log
+nginx.conf
+docker-compose.yml
+.env

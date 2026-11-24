@@ -1,0 +1,57 @@
+services:
+
+  app:
+    build: docker
+    volumes:
+      - ./src:/var/www/project
+    environment:
+      PGHOST: db
+      PGUSER: lesson15
+      PGPASSWORD: secret
+      PGDATABASE: lesson15
+    networks:
+      - front
+      - back
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./src:/var/www/project:ro
+    networks:
+      - front
+    depends_on:
+      - app
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: lesson15
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: lesson15
+    volumes:
+      - lesson15data:/var/lib/postgresql/data
+    networks:
+      - back
+
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8080
+    networks:
+      - front
+      - back
+    depends_on:
+      - db
+
+volumes:
+  lesson15data:
+
+networks:
+  front:
+  back:
+    internal: true
